@@ -8,15 +8,20 @@ HashTable.prototype.insert = function(k, v){
   // check for and handle collisions
   var tup = [k,v]
   var bucket = []
-  this._storage.set(i, bucket.push(tup));
+  var new_bucket_entry = bucket.push(tup)
+  console.log("tup is " + tup)
+  console.log("new_bucket_entry is " + new_bucket_entry)
+  console.log("this.storage is " + this.storage)
+  this._storage.set(i, new_bucket_entry);
 };
 
 HashTable.prototype.retrieve = function(k){
-  var i = getIndexBelowMaxForKey(k, this._limit);
+  var desired_index = getIndexBelowMaxForKey(k, this._limit);
   //this is the wanted for input key (k)
-  var bucket = this._storage.get(i);
-
-  return bucket[0][1]
+  var desired_bucket = this._storage.get(desired_index);
+  // console.log("desired_bucket is " + desired_bucket)
+  // console.log("desired_bucket[0] is " + desired_bucket[1])
+  return desired_bucket[1]
 };
 
 HashTable.prototype.remove = function(k){
