@@ -5,28 +5,48 @@ var HashTable = function(){
 
 HashTable.prototype.insert = function(k, v){
   var i = getIndexBelowMaxForKey(k, this._limit);
+  var tup = [k,v];
+  var bucket = this._storage.get(i);
   // check for and handle collisions
-  var tup = [k,v]
-  var bucket = []
-  var new_bucket_entry = bucket.push(tup)
-  console.log("tup is " + tup)
-  console.log("new_bucket_entry is " + new_bucket_entry)
-  console.log("this.storage is " + this.storage)
-  this._storage.set(i, new_bucket_entry);
+  // if storage[i] is undefined
+    // if (this._storage[i] === undefined){
+    if (bucket === undefined) {
+      this._storage.set(i, [tup]);
+    } else{
+      bucket.push(tup);
+      this._storage.set(i, bucket);
+    }
+
+    // make ew bucket
+  //else push onto existing bucket
+  //var new_bucket_entry = bucket[bucket.length - 1];
+
+  // console.log("tup is " + tup)
+
+
 };
 
 HashTable.prototype.retrieve = function(k){
   var desired_index = getIndexBelowMaxForKey(k, this._limit);
   //this is the wanted for input key (k)
   var desired_bucket = this._storage.get(desired_index);
-  // console.log("desired_bucket is " + desired_bucket)
-  // console.log("desired_bucket[0] is " + desired_bucket[1])
-  return desired_bucket[1]
+  for (var i = 0; i < desired_bucket.length; i++) { //each tuple in bucket
+    var tuple = desired_bucket[i];
+    if (tuple[0] === k) return tuple[1];
+  }
+  return null
 };
 
 HashTable.prototype.remove = function(k){
-  var i = getIndexBelowMaxForKey(k, this._limit);
-  this._storage.set(i, null);
+  var desired_index = getIndexBelowMaxForKey(k, this._limit);
+  var desired_bucket = this._storage.get(desired_index);
+  // this._storage.set(i, null);
+  for (var i = 0; i < desired_bucket.length; i++) { //each tuple in bucket
+    var tuple = desired_bucket[i];
+    if (tuple[0] === k) {
+      desired_bucket.splice(i,1)
+    }
+  }
 };
 
 
